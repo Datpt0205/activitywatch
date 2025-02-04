@@ -1,0 +1,7 @@
+# Loại trừ các tệp không cần thiết
+*.pyc
+*.log
+__pycache__/
+
+# Đừng loại trừ thư mục activitywatch
+!activitywatch/

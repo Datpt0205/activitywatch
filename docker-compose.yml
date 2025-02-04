@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+
+  aw-watcher-afk:
+    build: .
+    container_name: aw-watcher-afk
+    image: activitywatch
+    restart: unless-stopped
+    command: ["poetry", "run", "aw-watcher-afk"]
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "aw-watcher-afk"]
+      interval: 5s
+      retries: 3
+
+  aw-watcher-window:
+    build: .
+    container_name: aw-watcher-window
+    image: activitywatch
+    restart: unless-stopped
+    command: ["poetry", "run", "aw-watcher-window"]
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "aw-watcher-window"]
+      interval: 5s
+      retries: 3
+
+  aw-server:
+    build: .
+    container_name: aw-server
+    image: activitywatch
+    ports:
+      - "5600:5600/tcp"
+    restart: unless-stopped
+    depends_on:
+      aw-watcher-afk:
+        condition: service_healthy
+      aw-watcher-window:
+        condition: service_healthy
+    command: ["poetry", "run", "aw-server"]
